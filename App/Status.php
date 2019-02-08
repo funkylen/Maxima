@@ -16,6 +16,11 @@ class Status
         return json_decode(file_get_contents('status.json'), true);
     }
 
+    public static function getWinList()
+    {
+        return json_decode(file_get_contents('App/winList.json'), true);
+    }
+
     public static function isEmpty($status)
     {
         return empty($status);

@@ -31,7 +31,7 @@ class TicTacToe
                 break;
             case 4: return $this->display();
                 break;
-            case 5: echo 'В разработке';
+            case 5: return $this->run();
                 break;
             default: echo 'Выберите корректный пункт меню: ';
 
@@ -49,7 +49,6 @@ class TicTacToe
 
     public function endGame()
     {
-        Status::reset();
         exit();
     }
 
@@ -78,7 +77,7 @@ class TicTacToe
         echo 'Столбец: ';
         $col = trim(fgets(STDIN, 255));
 
-        if ($row < 1 || $row > 4 || $col < 1 || $col > 4) {
+        if ($row < 1 || $row > 3 || $col < 1 || $col > 3) {
             echo 'Значения должно быть в интервале от 1 до 3' . PHP_EOL;
             return $this->run();
         }
@@ -105,6 +104,8 @@ class TicTacToe
             default: echo 'Некорректный ввод';
         }
 
+        $this->winCheck();
+
         return $this->run();
     }
 
@@ -124,5 +125,21 @@ class TicTacToe
 
         return $this->run();
     }
-
+    
+    public function winCheck()
+    {
+        foreach (Status::getWinList() as $sign => $combinations){
+            $msg = $sign === 'O' ? 'Нолики победили!' : 'Крестики победили!';
+            foreach ($combinations as $combo)
+            {
+                if (Status::getStatus() === $combo) {
+                    echo PHP_EOL;
+                    echo "\033[0;32m" . $msg . "\033[0m";
+                    $this->display();
+                    echo PHP_EOL;
+                }
+            }
+        }
+        
+    }
 }
