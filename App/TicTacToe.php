@@ -2,21 +2,16 @@
 
 namespace App;
 
+use App\Status;
 
 class TicTacToe
 {
     protected $menu = [
-        '1' => '1. Начать игру',
+        '1' => '1. Новая игра',
         '2' => '2. Сделать ход',
         '3' => '3. Завершить игру',
         '4' => '4. Отрисовать текущее состояние',
         '5' => '5. About'
-    ];
-
-    protected $nullStatus = [
-        '1' => [ '1' => ' . ', '2' => ' . ', '3' => ' . ' ],
-        '2' => [ '1' => ' . ', '2' => ' . ', '3' => ' . ' ],
-        '3' => [ '1' => ' . ', '2' => ' . ', '3' => ' . ' ],
     ];
 
     public function run()
@@ -34,7 +29,7 @@ class TicTacToe
                 break;
             case 3: return $this->endGame();
                 break;
-            case 4: return $this->getStatus();
+            case 4: return $this->display();
                 break;
             case 5: echo 'В разработке';
                 break;
@@ -54,24 +49,28 @@ class TicTacToe
 
     public function endGame()
     {
-        file_put_contents('status.json', '');
+        Status::reset();
         exit();
     }
 
     public function newGame()
     {
-        file_put_contents('status.json', json_encode($this->nullStatus));
+        Status::reset();
 
-        echo 'Вы начали новую игру' . PHP_EOL;
+        echo PHP_EOL . 'Вы начали новую игру' . PHP_EOL;
 
         return $this->run();
     }
 
     public function move()
     {
-        $status = json_decode(file_get_contents('status.json'), true);
+        $status = Status::getStatus();
 
-        $this->statusValidate($status);
+        if(Status::isEmpty($status)) {
+            Status::reset();
+        }
+
+        echo PHP_EOL;
 
         echo 'Строка: ';
         $row = trim(fgets(STDIN, 255));
@@ -95,12 +94,12 @@ class TicTacToe
         switch ($xo) {
             case 'X': 
                 $status[$row][$col] = ' X ';
-                $this->statusRecord($status);
+                Status::record($status);
                 break;
 
             case 'O': 
                 $status[$row][$col] = ' O ';
-                $this->statusRecord($status);
+                Status::record($status);
                 break;
 
             default: echo 'Некорректный ввод';
@@ -109,11 +108,15 @@ class TicTacToe
         return $this->run();
     }
 
-    public function getStatus()
+    public function display()
     {
-        $status = json_decode(file_get_contents('status.json'), true);
+        $status = Status::getStatus();
 
-        $this->statusValidate($status);
+        echo PHP_EOL;
+
+        if(Status::isEmpty($status)) {
+            Status::reset();
+        }
 
         array_map(function ($string) {
             echo '|' . implode('|', $string) . '|' . PHP_EOL;
@@ -122,16 +125,4 @@ class TicTacToe
         return $this->run();
     }
 
-    public function statusValidate($status)
-    {
-            if(empty($status)) {
-            echo 'Начните игру!' . PHP_EOL;
-            return $this->run();
-        }
-    }
-
-    public function statusRecord($status)
-    {
-        file_put_contents('status.json', json_encode($status, JSON_PRETTY_PRINT));
-    }
 }
