@@ -98,6 +98,7 @@ class TicTacToe
         }
 
         $this->winCheck();
+        $this->display();
 
         return $this->run();
     }
@@ -143,7 +144,6 @@ class TicTacToe
                 if (Status::getStatus() === $combo) {
                     echo PHP_EOL;
                     echo "\033[0;32m" . $msg . "\033[0m";
-                    $this->display();
                     echo PHP_EOL;
                 }
             }
