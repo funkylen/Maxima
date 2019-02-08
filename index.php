@@ -9,5 +9,5 @@ spl_autoload_register(function ($class) {
 });
 
 $app = new TicTacToe();
-$app->run();
 
+$app->run();
