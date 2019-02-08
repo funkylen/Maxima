@@ -33,7 +33,7 @@ class TicTacToe
                 break;
             case 4: return $this->display();
                 break;
-            case 5: return $this->run();
+            case 5: return $this->about();
                 break;
             default: 
                 echo "\033[0;31m" . 'Выберите корректный пункт меню!' . "\033[0m" . PHP_EOL;
@@ -50,15 +50,10 @@ class TicTacToe
         }
     }
 
-    public function endGame()
-    {
-        exit();
-    }
-
     public function newGame()
     {
         Status::reset();
-        
+
         echo PHP_EOL . "\033[0;32m" . 'Вы начали новую игру' . "\033[0m" . PHP_EOL;
 
         return $this->run();
@@ -107,6 +102,11 @@ class TicTacToe
         return $this->run();
     }
 
+    public function endGame()
+    {
+        exit();
+    }
+
     public function display()
     {
         $status = Status::getStatus();
@@ -123,7 +123,17 @@ class TicTacToe
 
         return $this->run();
     }
-    
+
+    public function about()
+    {
+        echo file_get_contents('App/image.txt');
+        echo PHP_EOL . "Крестики-Нолики V0.1";
+        echo PHP_EOL . "Разработчик: Владлен Гилязетдинов";
+        echo PHP_EOL . "Email: funkylen@gmail.com" . PHP_EOL;
+
+        return $this->run();
+    }
+
     public function winCheck()
     {
         foreach (Status::getWinList() as $sign => $combinations){
@@ -138,6 +148,5 @@ class TicTacToe
                 }
             }
         }
-        
     }
 }
