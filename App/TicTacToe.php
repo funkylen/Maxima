@@ -14,6 +14,8 @@ class TicTacToe
         '5' => '5. About'
     ];
 
+    protected $inputs = [ 'X', 'O' ];
+
     public function run()
     {
         $this->getMenu();
@@ -33,7 +35,8 @@ class TicTacToe
                 break;
             case 5: return $this->run();
                 break;
-            default: echo 'Выберите корректный пункт меню: ';
+            default: 
+                echo "\033[0;31m" . 'Выберите корректный пункт меню!' . "\033[0m" . PHP_EOL;
 
             return $this->run();
         }
@@ -55,8 +58,8 @@ class TicTacToe
     public function newGame()
     {
         Status::reset();
-
-        echo PHP_EOL . 'Вы начали новую игру' . PHP_EOL;
+        
+        echo PHP_EOL . "\033[0;32m" . 'Вы начали новую игру' . "\033[0m" . PHP_EOL;
 
         return $this->run();
     }
@@ -78,30 +81,25 @@ class TicTacToe
         $col = trim(fgets(STDIN, 255));
 
         if ($row < 1 || $row > 3 || $col < 1 || $col > 3) {
-            echo 'Значения должно быть в интервале от 1 до 3' . PHP_EOL;
+            echo "\033[0;31m" . 'Значения должно быть в интервале от 1 до 3' . "\033[0m" . PHP_EOL;
             return $this->run();
         }
 
         if ($status[$row][$col] !== ' . ') {
-            echo 'Поле занято!' . PHP_EOL;
+            echo "\033[0;31m" . 'Поле занято!' . "\033[0m" . PHP_EOL;
             return $this->run();
         }
 
-        echo 'X или O: ';
+        echo 'Крестик(X) или Нолик(O): ';
         $xo = trim(fgets(STDIN, 255));
-        
+
         switch ($xo) {
-            case 'X': 
-                $status[$row][$col] = ' X ';
+            case in_array($xo, $this->inputs): 
+                $status[$row][$col] = " {$xo} ";
                 Status::record($status);
                 break;
 
-            case 'O': 
-                $status[$row][$col] = ' O ';
-                Status::record($status);
-                break;
-
-            default: echo 'Некорректный ввод';
+            default: echo "\033[0;31m" . 'Неккоректный ввод' . "\033[0m" . PHP_EOL;
         }
 
         $this->winCheck();
